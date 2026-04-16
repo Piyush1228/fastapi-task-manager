@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
-# 🔐 password hashing
+# 🔐 Password hashing setup
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 def hash_password(password: str):
@@ -13,7 +13,7 @@ def hash_password(password: str):
 def verify_password(plain, hashed):
     return pwd_context.verify(plain, hashed)
 
-# 🔑 JWT config
+# 🔑 JWT setup
 SECRET_KEY = "mysecret"
 ALGORITHM = "HS256"
 
@@ -23,10 +23,10 @@ def create_token(data: dict):
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
-# 🔒 token extract system
+# 🔒 Token extraction
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
-# 🔥 CURRENT USER FUNCTION (UPDATED)
+# 🔥 Get current user from token
 def get_current_user(token: str = Depends(oauth2_scheme)):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -35,7 +35,7 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
         if username is None:
             raise HTTPException(status_code=401, detail="Invalid token")
 
-        return username   # 👈 bas yeh return karega
+        return username
 
     except:
         raise HTTPException(status_code=401, detail="Invalid token")
